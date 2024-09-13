@@ -1,18 +1,15 @@
-
-import './App.css';
-import Button from '@mui/material/Button';
-import SearchAppBar from './components/SearchAppBar';
-import JobCard from './components/JobCard';
-import JobPaging from './components/JobPaging';
-import Homes from './pages/HomePage';
-import { Container } from '@mui/material';
+import "./App.css";
+import { AuthProvider } from "./contexts/AuthContext";
+import Router from "./routes";
+import { BrowserRouter, useLocation } from "react-router-dom";
 
 function App() {
   return (
-    <div>
-      <SearchAppBar/>
-       <Homes></Homes>
-    </div>
+    <AuthProvider>
+      <BrowserRouter>
+        <Router />
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
 

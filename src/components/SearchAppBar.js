@@ -16,6 +16,10 @@ import MailIcon from "@mui/icons-material/Mail";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import LoginIcon from "@mui/icons-material/Login";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { AuthContext } from "../contexts/AuthContext";
+import LogoutIcon from '@mui/icons-material/Logout';
+import useAuth from "../hooks/useAuth";
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
   borderRadius: theme.shape.borderRadius,
@@ -81,8 +85,17 @@ export default function SearchAppBar() {
   };
 
   const menuId = "primary-search-account-menu";
- 
+  const { user } = useAuth();
+  const auth =useAuth();
 
+  const navigate = useNavigate();
+  const location= useLocation();
+  const handlClickLogout= async ()=>{
+    auth.logout(()=>{
+      navigate('/');
+    })
+  }
+  
   const mobileMenuId = "primary-search-account-menu-mobile";
   const renderMobileMenu = (
     <Menu
@@ -137,23 +150,61 @@ export default function SearchAppBar() {
             />
           </Search>
           <Box sx={{ flexGrow: 1 }} />
-          <Box sx={{ display: { xs: "none", md: "flex" } }}>
-            <IconButton
-              size="large"
-              aria-label="show 4 new mails"
-              color="inherit"
-            >
-              <LoginIcon />
+          {user? (
+            <>
               <Typography
-                variant="h6"
-                noWrap
-                component="div"
-                sx={{ display: { xs: "none", sm: "block" },ml:1 }}
+              variant="h6"
+              noWrap
+              component="div"
+              sx={{ display: { xs: "none", sm: "block" } }}
+            >
+              Welcome, {`${user.username}`}
+            </Typography>
+            <Box 
+            sx={{ display: { xs: "none", md: "flex" } }} 
+            onClick={handlClickLogout}
+            >
+              <IconButton
+                size="large"
+                aria-label="show 4 new mails"
+                color="inherit"
               >
-                Sign In
-              </Typography>
-            </IconButton>
+                <LogoutIcon />
+                <Typography
+                  variant="h6"
+                  noWrap
+                  component="div"
+                  sx={{ display: { xs: "none", sm: "block" },ml:1 }}
+                >
+                  Sign out
+                </Typography>
+              </IconButton>
           </Box>
+          </>
+          ): (
+          <Box 
+            sx={{ display: { xs: "none", md: "flex" } }} 
+            component={Link}
+            to={`/login`}
+            state={{ backgroundLocation: location }}
+            >
+              <IconButton
+                size="large"
+                aria-label="show 4 new mails"
+                color="inherit"
+              >
+                <LoginIcon />
+                <Typography
+                  variant="h6"
+                  noWrap
+                  component="div"
+                  sx={{ display: { xs: "none", sm: "block" },ml:1 }}
+                >
+                  Sign In
+                </Typography>
+              </IconButton>
+          </Box>)}
+          
           <Box sx={{ display: { xs: "flex", md: "none" } }}>
             <IconButton
               size="large"
